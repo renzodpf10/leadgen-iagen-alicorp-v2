@@ -1,11 +1,12 @@
 import streamlit as st
 from textgen_module import generate_product_description
 from feedback_summary_module import summarize_feedback
-from imagegen_module import generate_product_image  # nuevo módulo
+from imagegen_module import generate_product_image
 
-# Cargamos ambos tokens seguros
-api_token = st.secrets["api_token"]  # HuggingFace
-openrouter_token = st.secrets["openrouter_token"]  # OpenRouter
+# Tokens seguros desde secrets
+api_token = st.secrets["api_token"]                    # HuggingFace → análisis de feedback
+openrouter_token = st.secrets["openrouter_token"]      # OpenRouter → generación de descripción
+api_token_replicate = st.secrets["api_token_replicate"]  # Replicate → generación de imagen
 
 st.set_page_config(page_title="Generador IA - Alicorp", layout="centered")
 st.title("🤖 Gen AI para productos de Alicorp")
@@ -34,7 +35,7 @@ with tabs[1]:
 
     if st.button("Generar imagen"):
         try:
-            image_url = generate_product_image(prompt_img, openrouter_token)
+            image_url = generate_product_image(prompt_img, api_token_replicate)
             st.image(image_url, caption="Imagen generada por IA", use_column_width=True)
         except Exception as e:
             st.error(f"Error generando imagen: {e}")
