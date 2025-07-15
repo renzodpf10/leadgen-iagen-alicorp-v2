@@ -1,8 +1,18 @@
-from transformers import pipeline
 
-# Cargar pipeline de generación de texto con un modelo preentrenado (como Flan-T5)
-text_generator = pipeline("text2text-generation", model="google/flan-t5-base")
+import requests
+import os
 
-def generate_product_description(prompt):
-    result = text_generator(prompt, max_length=100, do_sample=True)[0]["generated_text"]
-    return result
+API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-small"
+API_TOKEN = os.environ.get("HUGGINGFACEHUB_API_TOKEN")
+
+headers = {"Authorization": f"Bearer {API_TOKEN}"}
+
+def generate_product_description(prompt: str) -> str:
+    payload = {"inputs": prompt}
+    response = requests.post(API_URL, headers=headers, json=payload)
+
+    if response.status_code == 200:
+        generated_text = response.json()[0]["generated_text"]
+        return generated_text
+    else:
+        return f"Error {response.status_code}: {response.text}"
