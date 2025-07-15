@@ -1,3 +1,4 @@
+
 import streamlit as st
 from transformers import pipeline
 from diffusers import StableDiffusionPipeline
@@ -57,26 +58,32 @@ if modulo == "Descripción de producto":
         st.write(resultado)
 
 # --------------------------
-# Módulo: Resumen de feedback
+# Módulo: Resumen de feedback (corregido)
 # --------------------------
 elif modulo == "Resumen de feedback":
-    st.header("💬 Resumen de Feedback")
+    st.header("🧠 Resumen de Feedback")
     comentarios = st.text_area("Ingresa comentarios de clientes (uno por línea):")
 
     if st.button("Generar resumen"):
-        prompt = f"Resume los siguientes comentarios de clientes en insights breves y útiles:\n{comentarios}"
-        resultado = text_generator(prompt, max_length=150)[0]['generated_text']
-        st.success("Resumen:")
-        st.write(resultado)
+        prompt = f"Resume los siguientes comentarios de clientes en insights breves y útiles:
+{comentarios}"
+        resultado = text_generator(prompt, max_length=150)
+
+        if resultado and isinstance(resultado, list) and 'generated_text' in resultado[0]:
+            texto_resumen = resultado[0]['generated_text']
+            st.success("Resumen:")
+            st.write(texto_resumen)
+        else:
+            st.error("Error al generar el resumen. Verifica si el modelo de texto está funcionando correctamente.")
 
 # --------------------------
 # Módulo: Generador de imagen
 # --------------------------
-#elif modulo == "Generador de imagen":
- #   st.header("🖼 Generador de Imágenes Promocionales")
-  #  prompt = st.text_input("Describe la imagen que deseas generar", value="Snack saludable con fondo natural y estilo publicitario")
+elif modulo == "Generador de imagen":
+    st.header("🖼 Generador de Imágenes Promocionales")
+    prompt = st.text_input("Describe la imagen que deseas generar", value="Snack saludable con fondo natural y estilo publicitario")
 
-   # if st.button("Generar imagen"):
-    #    with st.spinner("Generando imagen con IA..."):
-     #       image = image_generator(prompt).images[0]
-      #      st.image(image, caption="Imagen generada con IA")
+    if st.button("Generar imagen"):
+        with st.spinner("Generando imagen con IA..."):
+            image = image_generator(prompt).images[0]
+            st.image(image, caption="Imagen generada con IA")
