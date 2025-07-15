@@ -1,19 +1,19 @@
 import streamlit as st
 from textgen_module import generate_product_description
 from feedback_summary_module import summarize_feedback
-from imagegen_module import generate_product_image
+from imagegen_module import generate_product_image  # usa Replicate
 
-# Tokens seguros
-api_token = st.secrets["api_token"]
-openrouter_token = st.secrets["openrouter_token"]
-replicate_token = st.secrets["api_token_replicate"]
+# Cargamos los tokens desde secrets
+api_token = st.secrets["api_token"]  # HuggingFace
+openrouter_token = st.secrets["openrouter_token"]  # OpenRouter
+replicate_token = st.secrets["replicate_token"]  # Replicate
 
 st.set_page_config(page_title="Generador IA - Alicorp", layout="centered")
 st.title("🤖 Gen AI para productos de Alicorp")
 
 tabs = st.tabs(["📝 Descripción", "🖼️ Imagen", "💬 Feedback"])
 
-# --- Pestaña 1: Descripción
+# --- Pestaña 1: Descripción de producto ---
 with tabs[0]:
     st.header("📝 Generación de descripción de producto")
     nombre = st.text_input("Nombre del producto")
@@ -28,10 +28,10 @@ with tabs[0]:
         except Exception as e:
             st.error(f"Error generando descripción: {e}")
 
-# --- Pestaña 2: Imagen
+# --- Pestaña 2: Imagen del producto ---
 with tabs[1]:
     st.header("🖼️ Generación de imagen de producto")
-    prompt_img = st.text_input("Prompt visual (describe cómo debería verse el producto)")
+    prompt_img = st.text_input("Describe cómo se debería ver el producto")
 
     if st.button("Generar imagen"):
         try:
@@ -40,10 +40,10 @@ with tabs[1]:
         except Exception as e:
             st.error(f"Error generando imagen: {e}")
 
-# --- Pestaña 3: Feedback
+# --- Pestaña 3: Feedback de clientes ---
 with tabs[2]:
     st.header("💬 Análisis de feedback de clientes")
-    feedback_input = st.text_area("Pega aquí el feedback de los clientes (uno por línea)")
+    feedback_input = st.text_area("Pega aquí el feedback (uno por línea)")
 
     if st.button("Analizar feedback"):
         try:
