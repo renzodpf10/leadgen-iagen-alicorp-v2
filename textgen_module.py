@@ -1,12 +1,14 @@
-from transformers import pipeline
+from transformers import pipeline, set_seed
 
-# Cargar pipeline de generación de texto con un modelo preentrenado (como Flan-T5)
-text_generator = pipeline("text2text-generation", model="google/flan-t5-base")
+# Cargar pipeline de generación de texto más creativo
+text_generator = pipeline("text-generation", model="gpt2")
+set_seed(42)
 
 def generate_product_description(nombre, categoria, caracteristicas, api_token=None):
     prompt = (
-        f"Escribe una descripción atractiva para un producto llamado '{nombre}', "
-        f"de la categoría '{categoria}', con las siguientes características: {caracteristicas}."
+        f"Imagina un producto innovador llamado {nombre}, "
+        f"de la categoría {categoria}, con las siguientes características: {caracteristicas}. "
+        f"Escribe una descripción creativa y persuasiva para presentarlo al público."
     )
-    result = text_generator(prompt, max_length=200, do_sample=True)[0]["generated_text"]
-    return result
+    output = text_generator(prompt, max_length=150, do_sample=True, temperature=0.9, num_return_sequences=1)
+    return output[0]["generated_text"]
