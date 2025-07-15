@@ -2,48 +2,53 @@
 import streamlit as st
 import os
 from textgen_module import generate_product_description as generate_description
-from imagegen_module import generate_image
+from imagegen_module import generate_promotional_image as generate_image
 from feedback_summary_module import summarize_feedback
 
-st.set_page_config(page_title="LeadGen IA Gen – Versión Robusta", layout="centered")
+st.set_page_config(page_title="LeadGen IA Gen – Versión Robusta", layout="wide")
 
-st.title("🧠 LeadGen IA Gen – Versión Robusta")
+st.title("🚀 LeadGen IA Gen – Versión Robusta")
 st.markdown("App de IA Generativa para acelerar el lanzamiento de snacks saludables – Caso Alicorp")
 
-st.sidebar.header("Opciones")
-section = st.sidebar.radio("Selecciona una función:", ("1. Generar Descripción", "2. Generar Imagen", "3. Resumir Feedback"))
+tabs = st.tabs(["1. Generar descripción", "2. Generar imagen", "3. Resumir feedback"])
 
-if section == "1. Generar Descripción":
+with tabs[0]:
     st.header("📝 Generación automática de descripciones de producto")
-    prompt = st.text_area("Describe el producto o proporciona un prompt base", height=150)
+    product_name = st.text_input("Nombre del producto")
+    ingredients = st.text_area("Ingredientes o componentes")
+    benefits = st.text_area("Beneficios clave")
+    tone = st.selectbox("Tono", ["Creativo", "Emocional", "Informativo"])
+    model = st.selectbox("Modelo de lenguaje", ["google/flan-t5-base", "google/flan-t5-large"])
     if st.button("Generar descripción"):
-        if prompt.strip():
-            with st.spinner("Generando descripción..."):
-                description = generate_description(prompt)
+        if product_name and ingredients and benefits:
+            description = generate_description(product_name, ingredients, benefits, tone, model)
             st.success("Descripción generada:")
             st.write(description)
         else:
-            st.warning("Por favor ingresa un prompt.")
+            st.warning("Por favor completa todos los campos.")
 
-elif section == "2. Generar Imagen":
-    st.header("🖼️ Generación de imagen a partir de prompt")
-    prompt = st.text_area("Describe la imagen deseada para el producto", height=150)
+with tabs[1]:
+    st.header("🖼️ Generación de imagen promocional")
+    prompt = st.text_input("Prompt para generar imagen", value="A vibrant promotional photo of a healthy snack made of quinoa and mango")
+    negative_prompt = st.text_input("Negative prompt (opcional)", value="blurry, low quality")
+    model = st.selectbox("Modelo de difusión", ["stabilityai/stable-diffusion-2-1"])
     if st.button("Generar imagen"):
-        if prompt.strip():
-            with st.spinner("Generando imagen..."):
-                image_path = generate_image(prompt)
-            st.image(image_path, caption="Imagen generada", use_column_width=True)
+        if prompt:
+            image_url = generate_image(prompt, negative_prompt, model)
+            if image_url:
+                st.image(image_url, caption="Imagen generada")
+            else:
+                st.error("Error generando la imagen.")
         else:
             st.warning("Por favor ingresa un prompt.")
 
-elif section == "3. Resumir Feedback":
-    st.header("💬 Resumen de comentarios o feedback inicial de clientes")
-    feedback = st.text_area("Pega aquí comentarios o feedback de clientes", height=200)
+with tabs[2]:
+    st.header("🗣️ Resumen de feedback de clientes")
+    feedback_text = st.text_area("Comentarios o feedback recibido")
     if st.button("Resumir feedback"):
-        if feedback.strip():
-            with st.spinner("Generando resumen..."):
-                summary = summarize_feedback(feedback)
+        if feedback_text:
+            summary = summarize_feedback(feedback_text)
             st.success("Resumen generado:")
             st.write(summary)
         else:
-            st.warning("Por favor ingresa el feedback.")
+            st.warning("Por favor ingresa algún feedback.")
