@@ -1,24 +1,24 @@
-
 import streamlit as st
 from textgen_module import generate_product_description
 from imagegen_module import generate_product_image
 from feedback_summary_module import summarize_feedback
 
-# Obtener el token de los secretos
-api_token = st.secrets["api_token"]
+# (Opcional) Token si usas modelos con autenticación
+# api_token = st.secrets["api_token"]
+api_token = None  # Usamos modelos gratuitos sin autenticación
 
-# Interfaz
-st.set_page_config(page_title="LeadGen IA Gen – Versión Robusta", layout="wide")
-st.title("🧠 LeadGen IA Gen – Versión Robusta")
+st.set_page_config(page_title="Generador IA - AliCorp", layout="centered")
 
-tabs = st.tabs(["Descripciones", "Imágenes", "Feedback clientes"])
+st.title("🤖 Gen AI para productos saludables de AliCorp")
 
-# --- Pestaña 1: Descripciones ---
+tabs = st.tabs(["📝 Descripción", "🎨 Imagen", "💬 Feedback"])
+
+# --- Pestaña 1: Descripción del producto ---
 with tabs[0]:
-    st.header("📝 Generación automática de descripciones")
-    nombre = st.text_input("Nombre del producto", "")
-    categoria = st.text_input("Categoría del producto", "")
-    caracteristicas = st.text_area("Características del producto (separadas por comas)", "")
+    st.header("📝 Generación de descripción de producto")
+    nombre = st.text_input("Nombre del producto")
+    categoria = st.text_input("Categoría")
+    caracteristicas = st.text_area("Características (separadas por comas)")
     if st.button("Generar descripción"):
         try:
             descripcion = generate_product_description(nombre, categoria, caracteristicas, api_token)
@@ -27,14 +27,14 @@ with tabs[0]:
         except Exception as e:
             st.error(f"Error generando descripción: {e}")
 
-# --- Pestaña 2: Imágenes ---
+# --- Pestaña 2: Imagen ---
 with tabs[1]:
-    st.header("🧿 Generación automática de imágenes")
-    prompt = st.text_input("Ingresa el prompt para la imagen", "")
+    st.header("🎨 Generación de imagen del producto")
+    prompt = st.text_input("Describe visualmente cómo quieres que sea la imagen")
     if st.button("Generar imagen"):
         try:
-            image_url = generate_product_image(prompt, api_token)
-            st.image(image_url, caption="Imagen generada", use_column_width=True)
+            image = generate_product_image(prompt, api_token)
+            st.image(image, caption="Imagen generada por IA", use_column_width=True)
         except Exception as e:
             st.error(f"Error generando imagen: {e}")
 
@@ -44,7 +44,8 @@ with tabs[2]:
     feedback_input = st.text_area("Pega aquí el feedback de los clientes (uno por línea)")
     if st.button("Analizar feedback"):
         try:
-            resumen = summarize_feedback(feedback_input, api_token)
+            feedback_list = feedback_input.strip().split("\n")
+            resumen = summarize_feedback(feedback_list, api_token)
             st.success("Resumen de feedback:")
             st.write(resumen)
         except Exception as e:
