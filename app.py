@@ -72,11 +72,11 @@ elif modulo == "Resumen de feedback":
 # --------------------------
 # Módulo: Generador de imagen
 # --------------------------
-elif modulo == "Generador de imagen":
-    st.header("🖼 Generador de Imágenes Promocionales")
-    prompt = st.text_input("Describe la imagen que deseas generar", value="Snack saludable con fondo natural y estilo publicitario")
+#elif modulo == "Generador de imagen":
+ #   st.header("🖼 Generador de Imágenes Promocionales")
+  #  prompt = st.text_input("Describe la imagen que deseas generar", value="Snack saludable con fondo natural y estilo publicitario")
 
-    if st.button("Generar imagen"):
-        with st.spinner("Generando imagen con IA..."):
-            image = image_generator(prompt).images[0]
-            st.image(image, caption="Imagen generada con IA")
+   # if st.button("Generar imagen"):
+    #    with st.spinner("Generando imagen con IA..."):
+     #       image = image_generator(prompt).images[0]
+      #      st.image(image, caption="Imagen generada con IA")
