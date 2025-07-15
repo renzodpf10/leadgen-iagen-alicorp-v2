@@ -1,14 +1,11 @@
 import replicate
 
 def generate_product_image(prompt, api_token):
-    # Inicializa cliente de Replicate con tu token seguro
     client = replicate.Client(api_token=api_token)
 
-    # Ejecuta el modelo SDXL para generar una imagen
     output = client.run(
-        "stability-ai/sdxl",  # sin hash: usa la versión activa por defecto
+        "stability-ai/sdxl:db21e45e5d44b85e016e067b8fdfd1be65c6edecb17ee4f9c3c65b0d8305a456",
         input={"prompt": prompt}
     )
 
-    return output[0]  # URL de la imagen generada
-
+    return output[0]  # URL de imagen generada
