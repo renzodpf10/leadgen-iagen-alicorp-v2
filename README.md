@@ -1,4 +1,4 @@
-# 🧠 LeadGen IAGen – Solución con Gen AI para Alicorp
+# 🧠 Lead Gen AI – Solución con Gen AI para Alicorp
 
 Esta solución responde al reto de acelerar el lanzamiento comercial de nuevos productos saludables (snacks) mediante el uso de Inteligencia Artificial Generativa (IAGen), resolviendo los siguientes casos de uso:
 
