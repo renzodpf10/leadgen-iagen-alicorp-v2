@@ -1,17 +1,17 @@
 import streamlit as st
 from textgen_module import generate_product_description
 from feedback_summary_module import summarize_feedback
-from imagegen_module import generate_product_image
+from imagegen_module import generate_product_image  # módulo para imágenes
 
-# Carga de tokens desde secrets
-api_token = st.secrets["api_token"]                # Hugging Face (feedback)
-openrouter_token = st.secrets["openrouter_token"]  # OpenRouter (descripciones)
-stability_token = st.secrets["stability_token"]    # Stability AI (imágenes)
+# Cargar tokens desde secrets
+api_token = st.secrets["api_token"]               # HuggingFace
+openrouter_token = st.secrets["openrouter_token"] # OpenRouter (text generation)
+stability_token = st.secrets["stability_token"]   # Stability AI (image generation)
 
-# Configuración de página
 st.set_page_config(page_title="Generador IA - Alicorp", layout="centered")
 st.title("🤖 Gen AI para productos de Alicorp")
 
+# Pestañas
 tabs = st.tabs(["📝 Descripción", "🖼️ Imagen", "💬 Feedback"])
 
 # --- Pestaña 1: Generación de descripción ---
@@ -41,7 +41,7 @@ with tabs[1]:
         except Exception as e:
             st.error(f"Error generando imagen: {e}")
 
-# --- Pestaña 3: Análisis de feedback ---
+# --- Pestaña 3: Feedback ---
 with tabs[2]:
     st.header("💬 Análisis de feedback de clientes")
     feedback_input = st.text_area("Pega aquí el feedback de los clientes (uno por línea)")
@@ -54,5 +54,4 @@ with tabs[2]:
             st.write(resumen)
         except Exception as e:
             st.error(f"Error analizando feedback: {e}")
-
 
