@@ -1,30 +1,23 @@
 import requests
 
 def generate_product_description(nombre, categoria, caracteristicas, api_token):
+    if not api_token:
+        raise ValueError("API token es requerido para usar la API de Hugging Face.")
+
+    # Preparar el prompt
     prompt = (
-        f"Genera una descripción breve, persuasiva y en español para un producto llamado '{nombre}', "
-        f"que pertenece a la categoría '{categoria}' y tiene las siguientes características: {caracteristicas}."
+        f"Genera una descripción breve, creativa y persuasiva en español para un producto llamado '{nombre}', "
+        f"de la categoría '{categoria}', con estas características: {caracteristicas}."
     )
 
-    api_url = "https://api-inference.huggingface.co/models/tiiuae/falcon-rw-1b"
+    # Llamada a Hugging Face Inference API
+    API_URL = "https://api-inference.huggingface.co/models/mrm8488/t5-base-finetuned-summarize-news"
     headers = {"Authorization": f"Bearer {api_token}"}
+    payload = {"inputs": prompt, "parameters": {"max_length": 100, "do_sample": True}}
 
-    payload = {
-        "inputs": prompt,
-        "parameters": {
-            "max_new_tokens": 100,
-            "do_sample": True,
-            "temperature": 0.7
-        }
-    }
-
-    response = requests.post(api_url, headers=headers, json=payload)
+    response = requests.post(API_URL, headers=headers, json=payload)
 
     if response.status_code == 200:
-        result = response.json()
-        if isinstance(result, list) and "generated_text" in result[0]:
-            return result[0]["generated_text"]
-        else:
-            return "Error: No se obtuvo un texto generado válido."
+        return response.json()[0]["generated_text"]
     else:
-        return f"No se pudo generar la descripción. Detalle técnico: Error API ({response.status_code}): {res_
+        raise Exception(f"Error API ({response.status_code}): {response.text}")
