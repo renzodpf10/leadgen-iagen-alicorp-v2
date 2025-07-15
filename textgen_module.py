@@ -1,20 +1,21 @@
 from transformers import pipeline, set_seed
 
-# Pipeline con modelo gratuito multilingüe (incluye español)
-text_generator = pipeline("text-generation", model="tiiuae/falcon-rw-1b")
+# Modelo gratuito en español
+text_generator = pipeline("text-generation", model="datificate/gpt2-small-spanish")
 set_seed(42)
 
 def generate_product_description(nombre, categoria, caracteristicas, api_token=None):
     prompt = (
-        f"Escribe una descripción creativa, atractiva y persuasiva en español para promocionar "
-        f"un producto llamado '{nombre}', que pertenece a la categoría '{categoria}', "
-        f"con estas características: {caracteristicas}."
+        f"Producto: {nombre}\n"
+        f"Categoría: {categoria}\n"
+        f"Características: {caracteristicas}\n\n"
+        f"Descripción en español:"
     )
     output = text_generator(
         prompt,
-        max_new_tokens=100,
+        max_new_tokens=60,
         do_sample=True,
-        temperature=0.9,
+        temperature=0.7,
         num_return_sequences=1
     )
     return output[0]["generated_text"]
