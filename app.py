@@ -2,8 +2,9 @@ import streamlit as st
 from textgen_module import generate_product_description
 from feedback_summary_module import summarize_feedback
 
-# ✅ Usa el token seguro almacenado en Streamlit Cloud
-api_token = st.secrets["api_token"]
+# ✅ Usa los tokens seguros desde el archivo de secretos
+openrouter_token = st.secrets["openrouter_token"]
+huggingface_token = st.secrets.get("huggingface_token", None)
 
 st.set_page_config(page_title="Generador IA - Alicorp", layout="centered")
 st.title("🤖 Gen AI para productos de Alicorp")
@@ -18,7 +19,7 @@ with tabs[0]:
 
     if st.button("Generar descripción"):
         try:
-            descripcion = generate_product_description(nombre, categoria, caracteristicas, api_token)
+            descripcion = generate_product_description(nombre, categoria, caracteristicas, openrouter_token)
             st.success("Descripción generada:")
             st.write(descripcion)
         except Exception as e:
@@ -31,7 +32,7 @@ with tabs[1]:
     if st.button("Analizar feedback"):
         try:
             feedback_list = feedback_input.strip().split("\n")
-            resumen = summarize_feedback(feedback_list, api_token)
+            resumen = summarize_feedback(feedback_list, huggingface_token)
             st.success("Resumen de feedback:")
             st.write(resumen)
         except Exception as e:
