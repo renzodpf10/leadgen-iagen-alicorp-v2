@@ -2,7 +2,7 @@
 import requests
 
 def generate_product_image(prompt, api_token):
-    api_url = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2"
+    api_url = "https://api-inference.huggingface.co/models/CompVis/stable-diffusion-v1-4"
     headers = {"Authorization": f"Bearer {api_token}"}
     payload = {"inputs": prompt}
 
