@@ -1,24 +1,16 @@
-import requests
+import replicate
 
-def generate_product_image(prompt, api_token):
-    url = "https://openrouter.ai/api/v1/images/generations"
-    
-    headers = {
-        "Authorization": f"Bearer {api_token}",
-        "HTTP-Referer": "https://leadgen-iagen-alicorp-v2.streamlit.app",  # ¡Este debe coincidir con tu app!
-        "Content-Type": "application/json"
-    }
+def generate_product_image(prompt, replicate_token):
+    # Define el modelo de texto-a-imagen de Replicate (Stable Diffusion Turbo o SDXL)
+    model = "stability-ai/sdxl"
 
-    data = {
-        "model": "stabilityai/sdxl-turbo",
-        "prompt": prompt,
-        "num_images": 1,
-        "size": "512x512"
-    }
+    try:
+        output = replicate.run(
+            f"{model}:latest",
+            input={"prompt": prompt},
+            api_token=replicate_token
+        )
+        return output[0]  # URL de la imagen generada
+    except Exception as e:
+        raise Exception(f"Error generando imagen: {e}")
 
-    response = requests.post(url, headers=headers, json=data)
-    
-    if response.status_code == 200:
-        return response.json()["data"][0]["url"]
-    else:
-        raise Exception(f"Error generando imagen: {response.status_code} - {response.text}")
