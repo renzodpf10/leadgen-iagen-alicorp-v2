@@ -64,8 +64,7 @@ elif modulo == "Resumen de feedback":
     comentarios = st.text_area("Ingresa comentarios de clientes (uno por línea):")
 
     if st.button("Generar resumen"):
-        prompt = f"Resume los siguientes comentarios de clientes en insights breves y útiles:
-{comentarios}"
+        prompt = f"Resume los siguientes comentarios de clientes en insights breves y útiles:\n{comentarios}"
         resultado = text_generator(prompt, max_length=150)[0]['generated_text']
         st.success("Resumen:")
         st.write(resultado)
