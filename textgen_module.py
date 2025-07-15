@@ -1,23 +1,34 @@
+import os
 import requests
+import streamlit as st
 
-def generate_product_description(nombre, categoria, caracteristicas, api_token):
-    if not api_token:
-        raise ValueError("API token es requerido para usar la API de Hugging Face.")
+def generate_product_description(nombre, categoria, caracteristicas, api_token=None):
+    # Usa la clave secreta si no se pasó directamente
+    api_key = api_token or st.secrets["openrouter_token"]
 
-    # Preparar el prompt
     prompt = (
-        f"Genera una descripción breve, creativa y persuasiva en español para un producto llamado '{nombre}', "
-        f"de la categoría '{categoria}', con estas características: {caracteristicas}."
+        f"Genera una descripción de producto en español para un producto llamado '{nombre}', "
+        f"de la categoría '{categoria}', con estas características: {caracteristicas}. "
+        f"Debe ser atractiva y persuasiva."
     )
 
-    # Llamada a Hugging Face Inference API
-    API_URL = "https://api-inference.huggingface.co/models/mrm8488/t5-base-finetuned-summarize-news"
-    headers = {"Authorization": f"Bearer {api_token}"}
-    payload = {"inputs": prompt, "parameters": {"max_length": 100, "do_sample": True}}
-
-    response = requests.post(API_URL, headers=headers, json=payload)
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        },
+        json={
+            "model": "huggingfaceh4/zephyr-7b-beta",
+            "messages": [
+                {"role": "system", "content": "Eres un experto en marketing de productos saludables. Responde solo en español."},
+                {"role": "user", "content": prompt}
+            ]
+        },
+        timeout=30
+    )
 
     if response.status_code == 200:
-        return response.json()[0]["generated_text"]
+        return response.json()["choices"][0]["message"]["content"]
     else:
         raise Exception(f"Error API ({response.status_code}): {response.text}")
