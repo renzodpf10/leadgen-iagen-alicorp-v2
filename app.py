@@ -1,19 +1,19 @@
 import streamlit as st
 from textgen_module import generate_product_description
 from feedback_summary_module import summarize_feedback
-from imagegen_module import generate_product_image  # usa Replicate
+from imagegen_module import generate_product_image
 
-# Cargamos los tokens desde secrets
+# API Keys desde secrets
 api_token = st.secrets["api_token"]  # HuggingFace
 openrouter_token = st.secrets["openrouter_token"]  # OpenRouter
-replicate_token = st.secrets["replicate_token"]  # Replicate
+stability_token = st.secrets["stability_token"]  # Stability AI
 
 st.set_page_config(page_title="Generador IA - Alicorp", layout="centered")
 st.title("🤖 Gen AI para productos de Alicorp")
 
 tabs = st.tabs(["📝 Descripción", "🖼️ Imagen", "💬 Feedback"])
 
-# --- Pestaña 1: Descripción de producto ---
+# --- Pestaña 1: Descripción ---
 with tabs[0]:
     st.header("📝 Generación de descripción de producto")
     nombre = st.text_input("Nombre del producto")
@@ -28,22 +28,22 @@ with tabs[0]:
         except Exception as e:
             st.error(f"Error generando descripción: {e}")
 
-# --- Pestaña 2: Imagen del producto ---
+# --- Pestaña 2: Imagen ---
 with tabs[1]:
     st.header("🖼️ Generación de imagen de producto")
-    prompt_img = st.text_input("Describe cómo se debería ver el producto")
+    prompt_img = st.text_input("Prompt visual (describe cómo debería verse el producto)")
 
     if st.button("Generar imagen"):
         try:
-            image_url = generate_product_image(prompt_img, replicate_token)
-            st.image(image_url, caption="Imagen generada por IA", use_column_width=True)
+            image_data_url = generate_product_image(prompt_img, stability_token)
+            st.image(image_data_url, caption="Imagen generada por IA", use_column_width=True)
         except Exception as e:
             st.error(f"Error generando imagen: {e}")
 
-# --- Pestaña 3: Feedback de clientes ---
+# --- Pestaña 3: Feedback ---
 with tabs[2]:
     st.header("💬 Análisis de feedback de clientes")
-    feedback_input = st.text_area("Pega aquí el feedback (uno por línea)")
+    feedback_input = st.text_area("Pega aquí el feedback de los clientes (uno por línea)")
 
     if st.button("Analizar feedback"):
         try:
@@ -53,4 +53,5 @@ with tabs[2]:
             st.write(resumen)
         except Exception as e:
             st.error(f"Error analizando feedback: {e}")
+
 
