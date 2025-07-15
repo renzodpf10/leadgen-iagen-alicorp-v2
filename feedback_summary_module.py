@@ -1,24 +1,19 @@
+api_token = "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"
+
+
 import requests
+import os
 
-def summarize_feedback(feedback_text, api_token="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"):
-    """
-    Envía el feedback de los clientes a una API de resumen de texto de HuggingFace.
+API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+headers = {"Authorization": f"Bearer {os.getenv('HF_TOKEN')}"}
 
-    Parámetros:
-    - feedback_text: texto con los comentarios de los clientes, separados por líneas.
-    - api_token: tu token de acceso de HuggingFace (por defecto se pasa uno por seguridad).
-
-    Retorna:
-    - Texto con el resumen del feedback.
-    """
-    API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
-    headers = {"Authorization": f"Bearer {api_token}"}
-    payload = {"inputs": feedback_text}
-
-    response = requests.post(API_URL, headers=headers, json=payload)
-
+def summarize_feedback(comentarios: str) -> str:
+    response = requests.post(API_URL, headers=headers, json={"inputs": comentarios})
     if response.status_code == 200:
         result = response.json()
-        return result[0]["summary_text"]
+        if isinstance(result, list) and "summary_text" in result[0]:
+            return result[0]["summary_text"]
+        else:
+            return "⚠️ No se pudo generar un resumen válido."
     else:
-        raise Exception(f"Error en la API: {response.status_code} - {response.text}")
+        return f"⚠️ Error en la API: {response.status_code} - {response.text}"

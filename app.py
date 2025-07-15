@@ -1,52 +1,68 @@
 
 import streamlit as st
-import os
-from textgen_module import generate_product_description as generate_description
+from textgen_module import generate_product_description
 from imagegen_module import generate_image
 from feedback_summary_module import summarize_feedback
 
-st.set_page_config(page_title="LeadGen IA Gen – Versión Robusta", layout="wide")
+# Token actualizado
+API_TOKEN = "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"
 
-st.title("🧠 LeadGen IA Gen – Versión Robusta")
+# Configuración de la página
+st.set_page_config(
+    page_title="AI Snack Content Generator",
+    page_icon="🍿",
+    layout="centered",
+    initial_sidebar_state="auto"
+)
 
-tabs = st.tabs(["Descripciones", "Imágenes", "Feedback clientes"])
+st.title("🍿 LeadGen IA Generativa – Versión Robusta")
+st.write("Explora cómo la IA puede acelerar lanzamientos de productos mediante generación de descripciones, feedback e imágenes.")
 
-with tabs[0]:
-    st.header("🧠 Generación automática de descripciones")
-    product_name = st.text_input("Nombre del producto")
-    product_category = st.text_input("Categoría del producto")
-    product_features = st.text_area("Características del producto (separadas por comas)")
+# Selección de módulo
+modulo = st.sidebar.selectbox(
+    "Selecciona módulo",
+    ("Descripción de producto", "Resumen de feedback", "Generador de imagen")
+)
+
+# Módulo: Descripción de producto
+if modulo == "Descripción de producto":
+    st.header("📝 Generador de Descripción")
+    nombre = st.text_input("Nombre del producto", value="Barra de Quinoa con Cacao")
+    categoria = st.text_input("Categoría del producto", value="snack saludable")
+    atributos = st.text_input("Características o ingredientes", value="quinoa, cacao, miel")
 
     if st.button("Generar descripción"):
-        with st.spinner("Generando descripción..."):
-            try:
-                prompt = f"Nombre del producto: {product_name}\nCategoría: {product_category}\nCaracterísticas: {product_features}"
-                description = generate_description(prompt)
-                st.success("Descripción generada:")
-                st.write(description)
-            except Exception as e:
-                st.error(f"Error generando descripción: {e}")
+        try:
+            descripcion = generate_product_description(nombre, categoria, atributos, API_TOKEN)
+            st.success("Descripción generada:")
+            st.write(descripcion)
+        except Exception as e:
+            st.error(f"Error generando descripción: {e}")
 
-with tabs[1]:
-    st.header("🖼 Generación automática de imágenes")
-    prompt = st.text_input("Ingresa el prompt para la imagen")
+# Módulo: Resumen de feedback
+elif modulo == "Resumen de feedback":
+    st.header("💬 Resumen de Feedback")
+    comentarios = st.text_area("Ingresa comentarios de clientes (uno por línea):")
+
+    if st.button("Generar resumen"):
+        try:
+            resumen = summarize_feedback(comentarios, API_TOKEN)
+            st.success("Resumen generado:")
+            st.write(resumen)
+        except Exception as e:
+            st.error(f"Error analizando feedback: {e}")
+
+# Módulo: Generador de imagen
+elif modulo == "Generador de imagen":
+    st.header("🖼 Generador de Imágenes Promocionales")
+    prompt = st.text_input("Describe la imagen que deseas generar", value="Snack saludable con fondo natural y estilo publicitario")
+
     if st.button("Generar imagen"):
-        with st.spinner("Generando imagen..."):
-            try:
-                image = generate_image(prompt)
-                st.image(image, caption="Imagen generada")
-            except Exception as e:
-                st.error(f"Error generando imagen: {e}")
-
-with tabs[2]:
-    st.header("💬 Análisis de feedback de clientes")
-    feedback_input = st.text_area("Pega aquí el feedback de los clientes (uno por línea)")
-    if st.button("Analizar feedback"):
-        with st.spinner("Analizando feedback..."):
-            try:
-                feedback_list = feedback_input.strip().split("\n")
-                summary = summarize_feedback(feedback_list)
-                st.success("Resumen de feedback:")
-                st.write(summary)
-            except Exception as e:
-                st.error(f"Error analizando feedback: {e}")
+        try:
+            imagen_url = generate_image(prompt, API_TOKEN)
+            if imagen_url:
+                st.image(imagen_url, caption="Imagen generada con IA")
+            else:
+                st.warning("No se pudo generar la imagen.")
+        except Exception as e:
+            st.error(f"Error generando imagen: {e}")
