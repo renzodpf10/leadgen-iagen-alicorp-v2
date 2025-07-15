@@ -1,34 +1,32 @@
-import os
 import requests
-import streamlit as st
 
-def generate_product_description(nombre, categoria, caracteristicas, api_token=None):
-    # Usa la clave secreta si no se pasó directamente
-    api_key = api_token or st.secrets["openrouter_token"]
-
+def generate_product_description(nombre, categoria, caracteristicas, api_token):
     prompt = (
-        f"Genera una descripción de producto en español para un producto llamado '{nombre}', "
-        f"de la categoría '{categoria}', con estas características: {caracteristicas}. "
-        f"Debe ser atractiva y persuasiva."
+        f"Genera una descripción breve, creativa y persuasiva en español para un producto llamado '{nombre}', "
+        f"de la categoría '{categoria}', con estas características: {caracteristicas}."
     )
 
-    response = requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
-        },
-        json={
-            "model": "huggingfaceh4/zephyr-7b-beta",
-            "messages": [
-                {"role": "system", "content": "Eres un experto en marketing de productos saludables. Responde solo en español."},
-                {"role": "user", "content": prompt}
-            ]
-        },
-        timeout=30
-    )
+    headers = {
+        "Authorization": f"Bearer {api_token}",
+        "HTTP-Referer": "https://ali-genai-demo.streamlit.app",  # Cambia si tienes otro dominio
+        "Content-Type": "application/json"
+    }
 
-    if response.status_code == 200:
-        return response.json()["choices"][0]["message"]["content"]
-    else:
-        raise Exception(f"Error API ({response.status_code}): {response.text}")
+    data = {
+        "model": "mistralai/mixtral-8x7b-instruct",
+        "messages": [
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    }
+
+    try:
+        response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=data)
+        response.raise_for_status()
+        generated_text = response.json()["choices"][0]["message"]["content"]
+        return generated_text
+
+    except requests.exceptions.RequestException as e:
+        return f"Error API ({response.status_code}): {response.text}"
