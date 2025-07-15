@@ -2,7 +2,7 @@
 import streamlit as st
 import os
 from textgen_module import generate_product_description as generate_description
-from imagegen_module import generate_promotional_image as generate_image
+from imagegen_module import generate_image
 from feedback_summary_module import summarize_feedback
 
 st.set_page_config(page_title="LeadGen IA Gen – Versión Robusta", layout="wide")
