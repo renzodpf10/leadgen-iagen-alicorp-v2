@@ -7,9 +7,9 @@ from feedback_summary_module import summarize_feedback
 # api_token = st.secrets["api_token"]
 api_token = None  # Usamos modelos gratuitos sin autenticación
 
-st.set_page_config(page_title="Generador IA - AliCorp", layout="centered")
+st.set_page_config(page_title="Generador IA - Alicorp", layout="centered")
 
-st.title("🤖 Gen AI para productos saludables de AliCorp")
+st.title("🤖 Gen AI para productos saludables de Alicorp")
 
 tabs = st.tabs(["📝 Descripción", "🎨 Imagen", "💬 Feedback"])
 
@@ -28,15 +28,15 @@ with tabs[0]:
             st.error(f"Error generando descripción: {e}")
 
 # --- Pestaña 2: Imagen ---
-with tabs[1]:
-    st.header("🎨 Generación de imagen del producto")
-    prompt = st.text_input("Describe visualmente cómo quieres que sea la imagen")
-    if st.button("Generar imagen"):
-        try:
-            image = generate_product_image(prompt, api_token)
-            st.image(image, caption="Imagen generada por IA", use_column_width=True)
-        except Exception as e:
-            st.error(f"Error generando imagen: {e}")
+#with tabs[1]:
+#    st.header("🎨 Generación de imagen del producto")
+ #   prompt = st.text_input("Describe visualmente cómo quieres que sea la imagen")
+  #  if st.button("Generar imagen"):
+   #     try:
+    #        image = generate_product_image(prompt, api_token)
+     #       st.image(image, caption="Imagen generada por IA", use_column_width=True)
+      #  except Exception as e:
+       #     st.error(f"Error generando imagen: {e}")
 
 # --- Pestaña 3: Feedback ---
 with tabs[2]:
