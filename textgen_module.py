@@ -1,33 +1,37 @@
 import requests
+import json
 
-API_URL = "https://api-inference.huggingface.co/models/tiiuae/falcon-rw-1b"
+# Modelo en español fine-tuned para generación instructiva
+MODEL_URL = "https://api-inference.huggingface.co/models/mrm8488/t5-base-finetuned-summarize-news-es"
 
-def generate_product_description(nombre, categoria, caracteristicas, api_token=None):
-    headers = {"Authorization": f"Bearer {api_token}"} if api_token else {}
-
+def generate_product_description(nombre, categoria, caracteristicas, api_token):
     prompt = (
-        f"Escribe una descripción breve, creativa y en español para un snack saludable "
-        f"llamado '{nombre}', de la categoría '{categoria}', con estas características: {caracteristicas}."
+        f"Genera una descripción creativa, persuasiva y en español para un producto llamado '{nombre}', "
+        f"de la categoría '{categoria}', con estas características: {caracteristicas}."
     )
+
+    headers = {
+        "Authorization": f"Bearer {api_token}",
+        "Content-Type": "application/json"
+    }
 
     payload = {
         "inputs": prompt,
         "parameters": {
             "max_new_tokens": 100,
             "do_sample": True,
-            "temperature": 0.8
+            "temperature": 0.9
         }
     }
 
-    response = requests.post(API_URL, headers=headers, json=payload)
-
     try:
-        result = response.json()
-        if isinstance(result, list) and 'generated_text' in result[0]:
-            return result[0]['generated_text']
-        elif isinstance(result, dict) and 'error' in result:
-            raise ValueError(f"Error de modelo: {result['error']}")
+        response = requests.post(MODEL_URL, headers=headers, data=json.dumps(payload))
+
+        if response.status_code == 200:
+            result = response.json()
+            return result[0]["generated_text"]
         else:
-            raise ValueError("Respuesta inesperada del modelo.")
+            raise Exception(f"Error API ({response.status_code}): {response.text}")
+
     except Exception as e:
-        raise ValueError(f"No se pudo generar la descripción. Detalle técnico: {e}")
+        raise Exception(f"No se pudo generar la descripción. Detalle técnico: {e}")
