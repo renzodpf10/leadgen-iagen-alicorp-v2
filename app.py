@@ -3,17 +3,18 @@ from textgen_module import generate_product_description
 from feedback_summary_module import summarize_feedback
 from imagegen_module import generate_product_image
 
-# API Keys desde secrets
-api_token = st.secrets["api_token"]  # HuggingFace
-openrouter_token = st.secrets["openrouter_token"]  # OpenRouter
-stability_token = st.secrets["stability_token"]  # Stability AI
+# Carga de tokens desde secrets
+api_token = st.secrets["api_token"]                # Hugging Face (feedback)
+openrouter_token = st.secrets["openrouter_token"]  # OpenRouter (descripciones)
+stability_token = st.secrets["stability_token"]    # Stability AI (imágenes)
 
+# Configuración de página
 st.set_page_config(page_title="Generador IA - Alicorp", layout="centered")
 st.title("🤖 Gen AI para productos de Alicorp")
 
 tabs = st.tabs(["📝 Descripción", "🖼️ Imagen", "💬 Feedback"])
 
-# --- Pestaña 1: Descripción ---
+# --- Pestaña 1: Generación de descripción ---
 with tabs[0]:
     st.header("📝 Generación de descripción de producto")
     nombre = st.text_input("Nombre del producto")
@@ -28,19 +29,19 @@ with tabs[0]:
         except Exception as e:
             st.error(f"Error generando descripción: {e}")
 
-# --- Pestaña 2: Imagen ---
+# --- Pestaña 2: Generación de imagen ---
 with tabs[1]:
     st.header("🖼️ Generación de imagen de producto")
     prompt_img = st.text_input("Prompt visual (describe cómo debería verse el producto)")
 
     if st.button("Generar imagen"):
         try:
-            image_data_url = generate_product_image(prompt_img, stability_token)
-            st.image(image_data_url, caption="Imagen generada por IA", use_column_width=True)
+            image_url = generate_product_image(prompt_img, stability_token)
+            st.image(image_url, caption="Imagen generada por IA", use_column_width=True)
         except Exception as e:
             st.error(f"Error generando imagen: {e}")
 
-# --- Pestaña 3: Feedback ---
+# --- Pestaña 3: Análisis de feedback ---
 with tabs[2]:
     st.header("💬 Análisis de feedback de clientes")
     feedback_input = st.text_area("Pega aquí el feedback de los clientes (uno por línea)")
