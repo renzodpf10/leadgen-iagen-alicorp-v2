@@ -11,7 +11,7 @@ st.set_page_config(page_title="Generador IA - Alicorp", layout="centered")
 
 st.title("🤖 Gen AI para productos saludables de Alicorp")
 
-tabs = st.tabs(["📝 Descripción", "🎨 Imagen", "💬 Feedback"])
+tabs = st.tabs(["📝 Descripción", "💬 Feedback"])
 
 # --- Pestaña 1: Descripción del producto ---
 with tabs[0]:
